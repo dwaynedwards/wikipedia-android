@@ -1,6 +1,6 @@
-# Wikipedia Android App
+# Mikipedia Android App
 
-Get random wiki pages. Search for wiki pages. Favorite wiki pages you like. View the history of wiki pages you've visited.
+Get random Wikipedia pages. Search for Wikipedia pages. Favorite Wikipedia pages you like. View the history of Wikipedia pages you've visited.
 
 <img src="./static/wikipedia.gif" width="270" height="480">
 

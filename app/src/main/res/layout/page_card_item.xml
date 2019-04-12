@@ -20,13 +20,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp">
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_article"
+                android:id="@+id/image_page"
                 android:layout_width="200px"
                 android:layout_height="200px"
                 android:layout_gravity="center"
                 android:src="@drawable/baseline_image_24"/>
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/text_article_title"
+                android:id="@+id/text_article_page"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
