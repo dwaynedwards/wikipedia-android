@@ -5,10 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HistoryFragment">
+    tools:context="com.newdaydevelopments.mikipedia.fragments.HistoryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_history_article"
+        android:id="@+id/recycler_history_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"

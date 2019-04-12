@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Wikipedia</string>
-    <string name="title_wikipedia">Wikipedia</string>
+    <string name="app_name">Mikipedia</string>
+    <string name="title_mikipedia">Mikipedia</string>
     <string name="title_search">Search</string>
     <string name="title_favorite">Favorite</string>
     <string name="title_explore">Explore</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_history">History</string>
-    <string name="title_search_wikipedia">Search Wikipedia</string>
+    <string name="title_search_mikipedia">Search Mikipedia</string>
     <string name="title_clear_all">Clear All</string>
 </resources>
