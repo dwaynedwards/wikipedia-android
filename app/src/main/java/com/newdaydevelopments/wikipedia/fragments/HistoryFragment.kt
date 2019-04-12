@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.newdaydevelopments.wikipedia.R
 import com.newdaydevelopments.wikipedia.WikiApplication
+import com.newdaydevelopments.wikipedia.adapters.PageCardItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.adapters.PageListItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.managers.WikiManager
+import com.newdaydevelopments.wikipedia.models.WikiPageModel
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.noButton
@@ -18,10 +20,13 @@ import org.jetbrains.anko.yesButton
 
 class HistoryFragment : Fragment() {
 
+    private val currentResults: ArrayList<WikiPageModel> = ArrayList()
+    private val adapter by lazy {
+        PageListItemRecyclerAdapter(currentResults)
+    }
+
     private lateinit var wikiManager: WikiManager
     private lateinit var historyArticleRecycler: RecyclerView
-
-    private val adapter = PageListItemRecyclerAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,8 +44,6 @@ class HistoryFragment : Fragment() {
         setHasOptionsMenu(true)
 
         historyArticleRecycler = view.findViewById(R.id.recycler_history_article)
-        historyArticleRecycler.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         historyArticleRecycler.adapter = adapter
 
         return view
@@ -75,9 +78,8 @@ class HistoryFragment : Fragment() {
     }
 
     private fun refreshRecyclerView() {
-        val favorites = wikiManager.getHistory()
-        adapter.currentResults.clear()
-        adapter.currentResults.addAll(favorites)
+        currentResults.clear()
+        currentResults.addAll(wikiManager.getHistory())
         activity!!.runOnUiThread { adapter.notifyDataSetChanged() }
     }
 }

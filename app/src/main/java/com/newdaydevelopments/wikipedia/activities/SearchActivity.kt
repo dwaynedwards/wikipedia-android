@@ -10,19 +10,20 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.newdaydevelopments.wikipedia.R
 import com.newdaydevelopments.wikipedia.WikiApplication
+import com.newdaydevelopments.wikipedia.adapters.PageCardItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.adapters.PageListItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.managers.WikiManager
+import com.newdaydevelopments.wikipedia.models.WikiPageModel
 import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var wikiManager: WikiManager
-
-    private val adapter: PageListItemRecyclerAdapter = PageListItemRecyclerAdapter()
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    private val currentResults: ArrayList<WikiPageModel> = ArrayList()
+    private val adapter by lazy {
+        PageListItemRecyclerAdapter(currentResults)
     }
+
+    private lateinit var wikiManager: WikiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +34,7 @@ class SearchActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        recycler_search_results.layoutManager = LinearLayoutManager(this)
         recycler_search_results.adapter = adapter
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -57,14 +56,14 @@ class SearchActivity : AppCompatActivity() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 wikiManager.search(query!!, 20, 0) { result ->
-                    val size = adapter.currentResults.size
+                    val size = currentResults.size
                     if (size != 0) {
-                        adapter.currentResults.clear()
+                        currentResults.clear()
                     }
                     if (result.query != null) {
-                        adapter.currentResults.addAll(result.query!!.pages)
+                        currentResults.addAll(result.query!!.pages)
                     }
-                    if (adapter.currentResults.size != size) {
+                    if (currentResults.size != size) {
                         runOnUiThread { adapter.notifyDataSetChanged() }
                     }
                 }

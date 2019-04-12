@@ -4,7 +4,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.Gson
-import com.newdaydevelopments.wikipedia.models.QueryUtils
+import com.newdaydevelopments.wikipedia.models.QueryHelper
 import com.newdaydevelopments.wikipedia.models.WikiResultModel
 import java.io.Reader
 
@@ -15,7 +15,7 @@ class PageDataProvider {
     }
 
     fun search(term: String, take: Int, skip: Int, handler: (result: WikiResultModel) -> Unit) {
-        QueryUtils.getSearchUrl(term, take, skip)
+        QueryHelper.getSearchUrl(term, take, skip)
             .httpGet().responseObject(WikiDataDeserializer()) { _, response, result ->
                 if (response.statusCode != 200) {
                     throw Exception("Unable to get articles")
@@ -26,7 +26,7 @@ class PageDataProvider {
     }
 
     fun getRandom(take: Int, handler: (result: WikiResultModel) -> Unit) {
-        QueryUtils.getRandomUrl(take)
+        QueryHelper.getRandomUrl(take)
             .httpGet().responseObject(WikiDataDeserializer()) { _, response, result ->
                 if (response.statusCode != 200) {
                     throw Exception("Unable to get articles")

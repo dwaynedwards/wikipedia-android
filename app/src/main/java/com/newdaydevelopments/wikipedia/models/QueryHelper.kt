@@ -1,6 +1,6 @@
 package com.newdaydevelopments.wikipedia.models
 
-object QueryUtils {
+object QueryHelper {
     private const val BASE_URL = "https://en.wikipedia.org/w/api.php"
 
     fun getSearchUrl(term: String, take: Int, skip: Int): String {

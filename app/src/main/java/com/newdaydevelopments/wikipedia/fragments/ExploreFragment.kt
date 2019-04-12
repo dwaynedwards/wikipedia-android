@@ -11,18 +11,27 @@ import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.newdaydevelopments.wikipedia.R
 import com.newdaydevelopments.wikipedia.WikiApplication
 import com.newdaydevelopments.wikipedia.activities.SearchActivity
 import com.newdaydevelopments.wikipedia.adapters.PageCardItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.managers.WikiManager
-import kotlin.Exception
+import com.newdaydevelopments.wikipedia.models.WikiPageModel
+import com.newdaydevelopments.wikipedia.models.WikiResultModel
+import org.jetbrains.anko.doAsync
 
 class ExploreFragment : Fragment() {
 
-    private val adapter: PageCardItemRecyclerAdapter = PageCardItemRecyclerAdapter()
+    companion object {
+        private const val RESULT_KEY = "result"
+    }
+
+    private val currentResults: ArrayList<WikiPageModel> = ArrayList()
+    private val adapter by lazy {
+        PageCardItemRecyclerAdapter(currentResults)
+    }
 
     private lateinit var wikiManager: WikiManager
 
@@ -30,42 +39,76 @@ class ExploreFragment : Fragment() {
     private lateinit var exploreArticleRecycler: RecyclerView
     private lateinit var refresher: SwipeRefreshLayout
 
+    private var resultJson: String = ""
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         wikiManager = (activity!!.applicationContext as WikiApplication).wikiManager
     }
+
+    private var exploreView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_explore, container, false)
+        exploreView = inflater.inflate(R.layout.fragment_explore, container, false)
 
-        searchCard = view.findViewById(R.id.card_search)
+        refresher = exploreView!!.findViewById(R.id.refresher)
+        refresher.setOnRefreshListener {
+            doAsync {
+                getRandomArticles()
+            }
+        }
+
+        searchCard = exploreView!!.findViewById(R.id.card_search)
         searchCard.setOnClickListener {
             val searchIntent = Intent(context, SearchActivity::class.java)
             context!!.startActivity(searchIntent)
         }
 
-        exploreArticleRecycler = view.findViewById(R.id.recycler_explore_article)
-        exploreArticleRecycler.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        exploreArticleRecycler = exploreView!!.findViewById(R.id.recycler_explore_article)
         exploreArticleRecycler.adapter = adapter
 
-        refresher = view.findViewById(R.id.refresher)
-        refresher.setOnRefreshListener {
-            getRandomArticles()
+        return exploreView
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(RESULT_KEY, resultJson)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            resultJson = savedInstanceState.getString(RESULT_KEY, "")
+            if (resultJson != "") {
+                println("Has State!!!!!!!!!!")
+                doAsync {
+                    refresher.isRefreshing = true
+                    val result = Gson().fromJson(resultJson, WikiResultModel::class.java)
+                    currentResults.clear()
+                    currentResults.addAll(result.query!!.pages)
+                    activity!!.runOnUiThread {
+                        adapter.notifyDataSetChanged()
+                        refresher.isRefreshing = false
+                    }
+                }
+            }
+
         }
-        return view
     }
 
     private fun getRandomArticles() {
         refresher.isRefreshing = true
         try {
             wikiManager.getRandom(20) { result ->
-                adapter.currentResults.clear()
-                adapter.currentResults.addAll(result.query!!.pages)
+                resultJson = Gson().toJson(result)
+                currentResults.clear()
+                currentResults.addAll(result.query!!.pages)
                 activity!!.runOnUiThread {
                     adapter.notifyDataSetChanged()
                     refresher.isRefreshing = false

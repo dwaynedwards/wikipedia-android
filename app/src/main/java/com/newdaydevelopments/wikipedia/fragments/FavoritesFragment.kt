@@ -11,6 +11,7 @@ import com.newdaydevelopments.wikipedia.R
 import com.newdaydevelopments.wikipedia.WikiApplication
 import com.newdaydevelopments.wikipedia.adapters.PageCardItemRecyclerAdapter
 import com.newdaydevelopments.wikipedia.managers.WikiManager
+import com.newdaydevelopments.wikipedia.models.WikiPageModel
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.noButton
@@ -18,10 +19,13 @@ import org.jetbrains.anko.yesButton
 
 class FavoritesFragment : Fragment() {
 
+    private val currentResults: ArrayList<WikiPageModel> = ArrayList()
+    private val adapter: PageCardItemRecyclerAdapter by lazy {
+        PageCardItemRecyclerAdapter(currentResults)
+    }
+
     private lateinit var wikiManager: WikiManager
     private lateinit var favoritesArticleRecycler: RecyclerView
-
-    private val adapter = PageCardItemRecyclerAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,8 +43,6 @@ class FavoritesFragment : Fragment() {
         setHasOptionsMenu(true)
 
         favoritesArticleRecycler = view.findViewById(R.id.recycler_favorites_article)
-        favoritesArticleRecycler.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         favoritesArticleRecycler.adapter = adapter
 
         return view
@@ -76,8 +78,8 @@ class FavoritesFragment : Fragment() {
 
     private fun refreshRecyclerView() {
         val favorites = wikiManager.getFavorites()
-        adapter.currentResults.clear()
-        adapter.currentResults.addAll(favorites)
+        currentResults.clear()
+        currentResults.addAll(favorites)
         activity!!.runOnUiThread { adapter.notifyDataSetChanged() }
     }
 }
