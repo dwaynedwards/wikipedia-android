@@ -17,22 +17,28 @@ class PageDataProvider {
     fun search(term: String, take: Int, skip: Int, handler: (result: ResultModel) -> Unit) {
         QueryHelper.getSearchUrl(term, take, skip)
             .httpGet().responseObject(MikipediaDataDeserializer()) { _, response, result ->
-                if (response.statusCode != 200) {
+                val (data, error) = result
+                if (error != null) {
+                    throw Exception("Error getting articles: ${error.message}")
+                }
+                if (response.statusCode != 200 || data == null) {
                     throw Exception("Unable to get articles")
                 }
-                val (data, _) = result
-                handler.invoke(data as ResultModel)
+                handler.invoke(data)
         }
     }
 
     fun getRandom(take: Int, handler: (result: ResultModel) -> Unit) {
         QueryHelper.getRandomUrl(take)
             .httpGet().responseObject(MikipediaDataDeserializer()) { _, response, result ->
-                if (response.statusCode != 200) {
+                val (data, error) = result
+                if (error != null) {
+                    throw Exception("Error getting articles: ${error.message}")
+                }
+                if (response.statusCode != 200 || data == null) {
                     throw Exception("Unable to get articles")
                 }
-                val (data, _) = result
-                handler.invoke(data as ResultModel)
+                handler.invoke(data)
         }
     }
 
