@@ -2,7 +2,7 @@
 
 Get random Wikipedia pages. Search for Wikipedia pages. Favorite Wikipedia pages you like. View the history of Wikipedia pages you've visited.
 
-<img src="./static/wikipedia.gif" width="270" height="480">
+<img src="./static/mikipedia.gif" width="270" height="480">
 
 ---
 
