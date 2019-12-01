@@ -24,7 +24,7 @@
                 android:layout_width="200px"
                 android:layout_height="200px"
                 android:layout_gravity="center"
-                android:src="@drawable/baseline_image_24"/>
+                android:src="@drawable/baseline_image_24" />
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_article_page"
                 android:layout_width="match_parent"

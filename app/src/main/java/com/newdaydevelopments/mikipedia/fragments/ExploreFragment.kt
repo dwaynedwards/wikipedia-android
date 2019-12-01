@@ -71,6 +71,12 @@ class ExploreFragment : Fragment() {
         explorePageRecycler = exploreView!!.findViewById(R.id.recycler_explore_page)
         explorePageRecycler.adapter = adapter
 
+        if (savedInstanceState == null) {
+            doAsync {
+                getRandomArticles()
+            }
+        }
+
         return exploreView
     }
 
@@ -86,7 +92,6 @@ class ExploreFragment : Fragment() {
         if (savedInstanceState != null) {
             resultJson = savedInstanceState.getString(RESULT_KEY, "")
             if (resultJson != "") {
-                println("Has State!!!!!!!!!!")
                 doAsync {
                     refresher.isRefreshing = true
                     val result = Gson().fromJson(resultJson, ResultModel::class.java)
